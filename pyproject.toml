@@ -4,17 +4,30 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "multimodal-safety-lab"
-version = "0.1.0"
-description = "A safe red-team benchmark for cross-modal policy evasion using abstract risk tokens, channel-aware defenses, attack/defense matrices, and reproducible safety-utility metrics."
+version = "1.0.0"
+description = "Content-free red-team benchmark for text + image (OCR) input guards: cross-modal splitting, confusables, zero-width, leetspeak and OCR-noise evasions against benign lookalikes, with per-family attack-success and false-refusal rates."
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.10"
 license = {text = "MIT"}
-authors = [{name = "Asher"}]
-classifiers = [
-  "Programming Language :: Python :: 3",
-  "License :: OSI Approved :: MIT License",
-]
+authors = [{name = "Yixuan Zhang"}]
+dependencies = []
+
+[project.optional-dependencies]
+viz = ["matplotlib>=3.7"]
+dev = ["pytest>=8", "ruff>=0.6"]
+
+[project.scripts]
+mmsafety = "mmsafety.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["multimodal_safety_lab*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]

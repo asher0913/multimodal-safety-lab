@@ -7,10 +7,20 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.12", "3.13"]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
-      - run: python -m pip install -e .
-      - run: python -m unittest discover -s tests -v
+          python-version: ${{ matrix.python-version }}
+      - run: python -m pip install -e '.[dev]'
+      - run: ruff check src tests scripts
+      - run: ruff format --check src tests scripts
+      - run: pytest -q
+      - name: Evaluations reproduce the committed results
+        run: |
+          mmsafety evaluate --out /tmp/dev.json > /dev/null
+          mmsafety evaluate --suite benchmark/heldout.jsonl --out /tmp/heldout.json > /dev/null
+          python -c "import json; assert json.load(open('/tmp/dev.json')) == json.load(open('results/evaluation.json')); assert json.load(open('/tmp/heldout.json')) == json.load(open('results/evaluation_heldout.json')); print('reproduced')"
