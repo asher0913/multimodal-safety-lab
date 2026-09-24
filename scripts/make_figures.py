@@ -17,7 +17,7 @@ def main() -> None:
     dev = json.loads((ROOT / "results" / "evaluation.json").read_text())["results"]
     held = json.loads((ROOT / "results" / "evaluation_heldout.json").read_text())["results"]
     fig, ax = plt.subplots(figsize=(7.2, 4.6))
-    for rows, marker, label in ((dev, "o", "development phrasing"), (held, "s", "held-out phrasing")):
+    for rows, marker in ((dev, "o"), (held, "s")):
         for row in rows:
             x, y = 100 * row["false_refusal_rate"], 100 * row["attack_success_rate"]
             ax.scatter(x, y, marker=marker, s=60, color="#3182bd" if marker == "o" else "#e6550d", zorder=3)
